@@ -24,5 +24,5 @@ def get_notams():
 
 if __name__ == '__main__':
     import os
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get('PORT', 5000))  # Récupère le port imposé par Render
     app.run(host='0.0.0.0', port=port)
