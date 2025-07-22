@@ -9,23 +9,26 @@ app = Flask(__name__)
 
 @app.route('/notams', methods=['GET'])
 def get_notams():
-    url = 'https://sofia-briefing.aviation-civile.gouv.fr/sofia/pages/prepavol.html'
+    print("Requête /notams reçue")  # Log simple
 
+    url = 'https://sofia-briefing.aviation-civile.gouv.fr/sofia/pages/prepavol.html'
     try:
         response = requests.get(url)
         response.raise_for_status()
     except Exception as e:
+        print(f"Erreur requête HTTP: {e}")
         return jsonify({"error": f"Erreur lors de la récupération : {str(e)}"}), 500
 
     soup = BeautifulSoup(response.text, 'html.parser')
-
     texte = soup.get_text()
     lignes = texte.splitlines()
     notams = [ligne.strip() for ligne in lignes if "LFRM" in ligne]
 
+    print(f"{len(notams)} NOTAMs extraits")
     return jsonify(notams)
 
 if __name__ == '__main__':
     import os
-    port = int(os.environ.get('PORT', 5000))  # Récupère le port imposé par Render
+    port = int(os.environ.get('PORT', 5000))
+    print(f"Démarrage sur port {port}")
     app.run(host='0.0.0.0', port=port)
